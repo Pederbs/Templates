@@ -1,0 +1,180 @@
+%& -job-name=Simple_Article
+\documentclass[12pt]{article}
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{cite}
+\usepackage{rotating}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{enumitem}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+\usepackage{parskip}
+\usepackage{setspace}
+	\setstretch{1.25}
+
+
+
+\title{\vspace{-10ex}Example Title}
+\author{Peder Brandstorp Sanden}
+\date{}
+%\date{\vspace{-5ex}}  % Toggle commenting to test
+
+\begin{document}
+\maketitle
+
+\section*{Section}
+\subsection*{Some math}
+
+
+  \begin{equation}
+    T(n) = \begin{cases}
+      0 & \text{if } n = 0\\
+      1 & \text{if } n = 1\\
+      T(n-1) + T(n-2) + 1 & \text{if } n \geq 2
+      \label{defT(n)}
+      \end{cases}
+  \end{equation}
+
+  \begin{equation}
+    \begin{split}
+      T(n) &= T(n-1) + T(n-2) + 1\\
+      T(n) &= T(n-1) + T(n-2)\\
+      T(n) &= 2 \cdot T(n-1)\\
+      &\Downarrow \\
+      T(n) &= 2 \cdot 2 \cdot T(n-2)\\
+      T(n) &= 2^{k-1} \cdot T(n-k) \quad \{k = n-1\}\\
+      T(n) &= 2^{k-1} \cdot T(1)\\
+      T(n) &= O(2^n)
+    \end{split}
+  \end{equation}
+
+\subsection*{A List}
+The two properties a problem must have to be solved with dynamic programming are:
+\begin{itemize}
+  \item Optimal substructure
+  \item Overlapping sub-problems
+\end{itemize}
+
+\section*{A Table}
+Done after two iterations as there are no changes between iteration \textit{1.5} and \textit{2}, see table \ref{tab:2b}. The shortest path from \textit{s} to \textit{t} is 6 and goes: \textit{s-A-B-D-t}.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{c|c|c|c|c|c|c}
+  \textbf{Iteration} & \textbf{s} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{t}\\
+  \hline
+  \textbf{0} & 0  & $\infty$  & $\infty$ & $\infty$ & $\infty$ & $\infty$\\
+  \textbf{1} & 0 & 1 & 3 & 3 & 4 & 6\\
+  \textbf{2} & 0 & 1 & 3 & 3 & 4 & 6\\
+  \end{tabular}
+  \caption{Iteratioins for finding the shortest path from s to t}
+  \label{tab:2b}
+\end{table}
+
+\section*{Task 3: Maximum sum sub-array}
+\begin{lstlisting}[language=Python]
+def max_subarray_sum(A):
+  max_ending_here = max_so_far = A[0]
+
+  for num in A[1:]:
+    max_ending_here = max(num, max_ending_here + num)
+    max_so_far = max(max_so_far, max_ending_here)
+
+  return max_so_far
+
+# Example usage
+example_array = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+print(max_subarray_sum(example_array))
+\end{lstlisting}
+The time complexity of this is $O(n)$ as it only iterates through the array once.
+
+\section*{Task 4: Grid traveling}
+Traverse the grid from S to F by only moving right or down.
+
+\subsection*{a)}
+\begin{tabular}{|p{.3cm}|p{.3cm}|}
+  \hline
+  S &   \\
+  \hline
+    & F \\
+  \hline
+\end{tabular}\\\\
+When the grid is 2x2 there are 2 ways to get from S to F.
+
+\subsection*{b)}
+\begin{tabular}{|p{.3cm}|p{.3cm}|p{.3cm}|}
+  \hline
+  S &   &   \\
+  \hline
+    &   &   \\
+  \hline
+    &   & F \\
+  \hline
+\end{tabular}\\\\
+When the grid is 3x3 there are 6 ways to get from S to F.
+
+\subsection*{c)}
+\begin{tabular}{|p{.3cm}|p{.3cm}|p{.3cm}|p{.3cm}|}
+  \hline
+  S &   &   &   \\
+  \hline
+    &   &   &   \\
+  \hline
+    &   &   &   \\
+  \hline
+    &   &   & F \\
+  \hline
+\end{tabular}\\\\
+When the grid is 4x4 there are 20 ways to get from S to F.
+\subsection*{Observation}
+The pattern can be recognized from table \ref{tab:pattern} where the number in the cells represents how many different ways one can traverse the grid from S to F with the specified rules.
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|p{.4cm}|p{.4cm}|p{.4cm}|p{.4cm}|}
+    \hline
+    1 & 1 & 1 & 1 \\
+    \hline
+    1 & 2 & 3 & 4 \\
+    \hline
+    1 & 3 & 6 & 10 \\
+    \hline
+    1 & 4 & 10 & 20\\
+    \hline
+  \end{tabular}
+  \caption{Pattern}
+  \label{tab:pattern}
+\end{table}
+
+
+\end{document}
+
+
